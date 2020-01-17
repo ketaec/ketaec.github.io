@@ -92,6 +92,7 @@
 
       function search(){
         var value = document.getElementById("search_text").value;
+        value = value.toLowerCase();
         var new_data =  data.filter(function (obj) {
               if (obj.de.toLowerCase().search(value) >= 0 ) {
                 return true
