@@ -11,155 +11,36 @@
     <title>Hello, Eswar!</title>
   </head>
   <body>
-    <div class="container">
-      <div class="row mt-3">
-        <div class='col-3 mt-2'>
-          <select id="languageDD">
-          <option value="de" selected="selected">German</option>
-          <option value="en">English</option>
-        </select>
+    <div class="main">
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-info">
+            <div class="col-md-5 p-lg-5 mx-auto my-5">
+              <h1 class="display-4 font-weight-normal text-white">Keta's Family Site</h1>
+              <p class="lead font-weight-normal text-white"> We Vijaya and Eswar Chand welcome's you to our site </p>
+            </div>
         </div>
-        <div class='col-5 mt-1'><input class="form-control mr-sm-2" type="search" placeholder="Search" id='search_text' aria-label="Search"></div>
-        <div class='col-3'><button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="search()">Search</button></div>
-
-      </div>      
-      <div class=""><div id='data'></div></div>
-      <div class="row mb-3">
-        <div class='col'><button type="button" class="btn btn-dark" onclick="showRandom()">Show Random</button></div>
-        <div class='col'><button type="button" class="btn btn-dark" onclick="showAll()">Show All</button></div>
-        <!-- <div class='col'><button type="button" class="btn btn-dark" onclick="say()">Speak</button></div> -->
-      </div></div>
+        <div class="container mt-3">
+            <div class="card" >            
+                <div class="card-body">
+                  <h5 class="card-title">German Dict</h5>
+                  <p class="card-text">German to English translation <br> with search and pronounciation feature</p>
+                  <a href="/german" class="btn btn-primary">open site</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- <audio controls="controls" src="https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=achtung&tl=de&total=1&idx=0&textlen=26" type="audio/mpeg"> 
-      Your browser does not support the audio element.
-    </audio> -->
-    
+   
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-    <script type="text/javascript">
-      var data;
-      function loadFile() {
-
-        var retrievedjsonfileObject = localStorage.getItem('jsonfile');
-
-        if( retrievedjsonfileObject ) {
-          data = JSON.parse(retrievedjsonfileObject);
-          showRandom(); 
-        } else {
-          var xhttp  = new XMLHttpRequest();
-          
-          xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    
-                    var obj = this.responseText;
-                    localStorage.setItem('jsonfile', obj);
-                    data = JSON.parse(obj);
-                    showRandom();                  
-                }
-            };
-            xhttp.open('GET', 'EasyGermanwords.json', true);
-            xhttp.send();
-        }
-      }
-
-      window.onload = loadFile;
-
-      function changeData(new_data) {
-          window.scrollTo(0, 0);
-          divData = ``;
-          for( elem of new_data){
-              
-              divData +=  `<div class="card border-dark mb-3" style="margin-top: 1rem;">              
-              <div class="card-body text-dark">
-                <h5 class="card-title">${elem.de}</h5>
-                <p class="card-text">${elem.en}</p>
-
-              </div>
-              <div class="card-footer text-info">
-                <div class="row">
-                  <div class="col-4">Level: ${elem.level}</div>
-                  <div class="col-5"><a href="https://translate.google.com/translate_tts?ie=UTF-8&tl=de-DE&client=tw-ob&q=${elem.de}" rel="noopener noreferrer" target="_blank">pronounce</a> </div>
-                  <div class="col-3">${elem.number}</div>
-                </div>
-              </div>
-            </div>`;
-
-          }
-          document.getElementById("data").innerHTML = divData;
-      }
-
-      function showRandom() {
-          var randoms = [];
-          var random_data = [];
-          for (n=1; n<=10; ++n) {
-            randoms.push(Math.floor((Math.random() * data.length)));
-          }
-          for( r of randoms){ 
-            random_data.push(data[r]);
-          }
-          changeData(random_data);
-      }
-
-      function showAll() {
-        changeData(data);
-      }
-
-      function search(){
-        var value = document.getElementById("search_text").value;
-        var lang = document.getElementById("languageDD").value;        
-        value = value.toLowerCase();
-
-        var new_data =  data.filter(function (obj) {
-              if (obj[lang].toLowerCase().search(value) >= 0 ) {
-                return true
-              } else {
-                return false ;
-              }              
-        });
-
-        changeData(new_data);
-      }
-
-      function say() {
-        // var synth = window.speechSynthesis;
-        // var utterThis = new SpeechSynthesisUtterance('willkommen');
-        // var voices = window.speechSynthesis.getVoices();
-        // utterThis.voice = voices[2];
-        // utterThis.volume = 0.5;
-        // synth.speak(utterThis);
-
-        // var msg = new SpeechSynthesisUtterance();
-        // var voices = window.speechSynthesis.getVoices();
-        // msg.voice = voices[2];
-        // msg.rate = 5;
-        // msg.pitch = 1;
-        // msg.text = 'verschlucken';
-        // msg.volume = 1;
-
-        // msg.onend = function(e) {
-        //   console.log('Finished in ' + event.elapsedTime + ' seconds.');
-        // };
-
-        // speechSynthesis.speak(msg);
-        var worte = new SpeechSynthesisUtterance("Herzlich willkommen.");
-        var stimmen = window.speechSynthesis.getVoices();
-        worte.voice = stimmen[6];
-        window.speechSynthesis.speak(worte);
-      }
-
-  </script>
 
   </body>
+
   <style>
-      #data1 {
-        background-color: lightgrey;
-        width: 60%;
-        border: 1px solid black;
-        padding: 5px;
-        margin: 20px;
-      }
+
   </style>
+
 </html>
+
+
