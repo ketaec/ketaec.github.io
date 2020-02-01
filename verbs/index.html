@@ -11,25 +11,36 @@
     <title>Hello, Eswar!</title>
   </head>
   <body>
-    <div class="container">
-      <div class="row mt-3">
-        <div class='col-3 mt-2'>
-          <select id="languageDD">
-          <option value="de" selected="selected">German</option>
-          <option value="en">English</option>
-        </select>
+      <div class="container">
+          <div class="row mt-3">
+            <div class='col-3 mt-2'>
+              <select id="languageDD">
+              <option value="de" selected="selected">German</option>
+              <option value="en">English</option>
+            </select>
+            </div>
+            <div class='col-4 mt-1'><input class="form-control mr-sm-2" type="search" placeholder="Search" id='search_text' aria-label="Search"></div>
+            <div class='col-2'><button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="search()">&#128269;</button></div>
+            <div class=" col-3 dropdown mt-2">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                &#9776;
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/german/"> All words</a>
+                <a class="dropdown-item" href="/verbs/"> Verbs</a>
+                <a class="dropdown-item" href="/sentences/"> Sentences</a>
+              </div>
+            </div>
+    
+          </div>      
+          <div class=""><div id='data'></div></div>
+          <div class="row mb-3" id='buttons'>
+            <div class='col'><button type="button" class="btn btn-dark" onclick="showRandom()">Show Random</button></div>
+            <div class='col'><button type="button" class="btn btn-dark" onclick="showAll()">Show All</button></div>
+            <!-- <div class='col'><button type="button" class="btn btn-dark" onclick="say()">Speak</button></div> -->
+          </div>
         </div>
-        <div class='col-5 mt-1'><input class="form-control mr-sm-2" type="search" placeholder="Search" id='search_text' aria-label="Search"></div>
-        <div class='col-3'><button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="search()">Search</button></div>
 
-      </div>      
-      <div class=""><div id='data'></div></div>
-      <div class="row mb-3" id='buttons'>
-        <div class='col'><button type="button" class="btn btn-dark" onclick="showRandom()">Show Random</button></div>
-        <div class='col'><button type="button" class="btn btn-dark" onclick="showAll()">Show All</button></div>
-        <!-- <div class='col'><button type="button" class="btn btn-dark" onclick="say()">Speak</button></div> -->
-      </div></div>
-    </div>
     <div style="position: fixed;bottom: 20px;right: 20px;width: 20px;border: solid 2px #17b5d9;border-radius: 7px;">
       <a href="#buttons" style="text-decoration: none;"> &#9759;</a>
     </div>

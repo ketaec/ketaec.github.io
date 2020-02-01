@@ -11,30 +11,56 @@
     <title>Hello, Eswar!</title>
   </head>
   <body>
-    <div class="container">
-      <div class="row mt-3">
-        <div class='col-3 mt-2'>
-          <select id="languageDD">
-          <option value="de" selected="selected">German</option>
-          <option value="en">English</option>
-        </select>
-        </div>        
-        <div class='col-5 mt-1'><input class="form-control mr-sm-2" type="search" placeholder="Search" id='search_text' aria-label="Search"></div>
-        <div class='col-3'><button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="search()">Search</button></div>
+      <div class="container">
+          <div class="row mt-3">
+            <div class='col-3 mt-2'>
+              <select id="languageDD">
+              <option value="de" selected="selected">German</option>
+              <option value="en">English</option>
+            </select>
+            </div>
+            <div class='col-4 mt-1'><input class="form-control mr-sm-2" type="search" placeholder="Search" id='search_text' aria-label="Search"></div>
+            <div class='col-2'><button class="btn btn-outline-success my-2 my-sm-0" type="button"  onclick="search()">&#128269;</button></div>
+            <div class=" col-3 dropdown mt-2">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                &#9776;
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/german/"> All words</a>
+                <a class="dropdown-item" href="/verbs/"> Verbs</a>
+                <a class="dropdown-item" href="/sentences/"> Sentences</a>
+              </div>
+            </div>
+    
+          </div>      
+          <div class=""><div id='data'></div></div>
+          <div class="row mb-3" id='buttons'>
+            <div class='col'><button type="button" class="btn btn-dark" onclick="showRandom()">Show Random</button></div>
+            <div class='col'><button type="button" class="btn btn-dark" onclick="showAll()">Show All</button></div>
+          </div>
+        </div>
 
-      </div>      
-      <div class=""><div id='data'></div></div>
-      <div class="row mb-3" id='buttons'>
-        <div class='col'><button type="button" class="btn btn-dark" onclick="showRandom()">Show Random</button></div>
-        <div class='col'><button type="button" class="btn btn-dark" onclick="showAll()">Show All</button></div>
-        <!-- <div class='col'><button type="button" class="btn btn-dark" onclick="say()">Speak</button></div> -->
-      </div>
-      
-    </div></div>
-    </div>
     <div style="position: fixed;bottom: 20px;right: 20px;width: 20px;border: solid 2px #17b5d9;border-radius: 7px;">
       <a href="#buttons" style="text-decoration: none;"> &#9759;</a>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Sentences</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="sentenceDiv">check</div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
     <!-- <audio controls="controls" src="https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=achtung&tl=de&total=1&idx=0&textlen=26" type="audio/mpeg"> 
       Your browser does not support the audio element.
     </audio> -->
@@ -46,12 +72,15 @@
 
     <script type="text/javascript">
       var data;
+      var sentenceData;
       function loadFile() {
 
         var retrievedjsonfileObject = localStorage.getItem('jsonfile');
+        var retreivedsentencesfileObject =localStorage.getItem("sentencesfile");
 
-        if( retrievedjsonfileObject ) {
+        if( retrievedjsonfileObject && retreivedsentencesfileObject ) {
           data = JSON.parse(retrievedjsonfileObject);
+          sentenceData = JSON.parse(retreivedsentencesfileObject);
           showRandom(); 
         } else {
           var xhttp  = new XMLHttpRequest();
@@ -67,6 +96,17 @@
             };
             xhttp.open('GET', 'EasyGermanwords.json', true);
             xhttp.send();
+
+            var xhttpSente  = new XMLHttpRequest();
+          
+            xhttpSente.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {                    
+                    var obj = this.responseText;
+                    localStorage.setItem('sentencesfile', obj);                 
+                }
+            };
+            xhttpSente.open('GET', '../sentences/sentences.json', true);
+            xhttpSente.send();
         }
       }
 
@@ -87,7 +127,11 @@
                 <div class="row">
                   <div class="col-4">Level: ${elem.level}</div>
                   <div class="col-5"><a href="https://translate.google.com/translate_tts?ie=UTF-8&tl=de-DE&client=tw-ob&q=${elem.de}" rel="noopener noreferrer" target="_blank">pronounce</a> </div>
-                  <div class="col-3">${elem.number}</div>
+                  <div class="col-3" onclick="searchSentence('${elem.de}')">
+                      <button type="button" class="btn" data-toggle="modal" data-target="#exampleModal">
+                          ${elem.number}
+                      </button>
+                  </div>
                 </div>
               </div>
             </div>`;
@@ -128,32 +172,25 @@
         changeData(new_data);
       }
 
-      function say() {
-        // var synth = window.speechSynthesis;
-        // var utterThis = new SpeechSynthesisUtterance('willkommen');
-        // var voices = window.speechSynthesis.getVoices();
-        // utterThis.voice = voices[2];
-        // utterThis.volume = 0.5;
-        // synth.speak(utterThis);
+      function searchSentence(value){
+        console.log(value);
+        var divText = value + "<br>";
+        var sentData = sentenceData.filter(function (obj) {
+              if (obj["de"].toLowerCase().search(value.toLowerCase()) >= 0 ) {
+                return true
+              } else {
+                return false ;
+              }              
+        });
+        console.log(sentData);
 
-        // var msg = new SpeechSynthesisUtterance();
-        // var voices = window.speechSynthesis.getVoices();
-        // msg.voice = voices[2];
-        // msg.rate = 5;
-        // msg.pitch = 1;
-        // msg.text = 'verschlucken';
-        // msg.volume = 1;
+        for( s of sentData) {
+          divText += "DE: " + s.de + "<br>" + "EN: " + s.en + "<br><br>";
+        }
 
-        // msg.onend = function(e) {
-        //   console.log('Finished in ' + event.elapsedTime + ' seconds.');
-        // };
-
-        // speechSynthesis.speak(msg);
-        var worte = new SpeechSynthesisUtterance("Herzlich willkommen.");
-        var stimmen = window.speechSynthesis.getVoices();
-        worte.voice = stimmen[6];
-        window.speechSynthesis.speak(worte);
+        document.getElementById("sentenceDiv").innerHTML = divText;
       }
+
 
   </script>
 
